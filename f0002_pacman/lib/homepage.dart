@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,13 +17,75 @@ class _HomePageState extends State<HomePage> {
   int numberOfSquares = numberInRow * 17;
   int player = 166; // PacMan start position
 
+  List<int> barries = [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    21,
+    22,
+    32,
+    33,
+    43,
+    44,
+    54,
+    55,
+    65,
+    66,
+    76,
+    77,
+    87,
+    88,
+    98,
+    99,
+    109,
+    110,
+    120,
+    121,
+    131,
+    132,
+    142,
+    143,
+    153,
+    154,
+    164,
+    165,
+    175,
+    176,
+    177,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186
+  ];
+
   List<int> playerEatenPath = [];
 
-  void walkThrouth() {
-    playerEatenPath.add(player);
-    // while () {
-    //   player++;
-    // }
+  void startGame() {
+    //
+    Timer.periodic(Duration(milliseconds: 250), (timer) {
+//
+      playerEatenPath.add(player);
+//
+      if (!barries.contains(player + 1)) {
+        setState(() {
+          player++;
+        });
+      }
+    });
   }
 
   @override
@@ -43,23 +107,26 @@ class _HomePageState extends State<HomePage> {
                     //
                     if (_index == player) {
                       return MyPlayer();
-                    } else if (_index <= 10 ||
-                        _index >= 176 ||
-                        _index % 11 == 0 ||
-                        (_index - 10) % 11 == 0) {
                       //
-                      print(_index);
-
+                    } else if (barries.contains(_index)) {
+                      //
                       return MyPixel(
                         child: Container(
                           color: Colors.blue,
                         ),
                       );
                     } else {
-                      return MyPath(
-                        outerColor: Colors.black,
-                        innerColor: Colors.yellow,
-                      );
+                      if (playerEatenPath.contains(_index)) {
+                        return MyPath(
+                          outerColor: Colors.black,
+                          innerColor: Colors.black,
+                        );
+                      } else {
+                        return MyPath(
+                          outerColor: Colors.black,
+                          innerColor: Colors.yellow,
+                        );
+                      }
                     }
                   }),
             ),
@@ -67,6 +134,10 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: Container(
               color: Colors.pink,
+              child: FloatingActionButton(
+                child: Text('Play'),
+                onPressed: startGame,
+              ),
             ),
           ),
         ],
@@ -78,8 +149,7 @@ class _HomePageState extends State<HomePage> {
 class MyPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-        'images/pacman.png');
+    return Image.asset('images/pacman.png');
   }
 }
 
@@ -87,8 +157,7 @@ class MyPixel extends StatelessWidget {
   const MyPixel({
     Key key,
     @required Container child,
-  })
-      : _child = child,
+  })  : _child = child,
         super(key: key);
 
   final _child;
@@ -107,8 +176,7 @@ class MyPath extends StatelessWidget {
     Key key,
     @required Color outerColor,
     @required Color innerColor,
-  })
-      : _outerColor = outerColor,
+  })  : _outerColor = outerColor,
         _innerColor = innerColor,
         super(key: key);
 
